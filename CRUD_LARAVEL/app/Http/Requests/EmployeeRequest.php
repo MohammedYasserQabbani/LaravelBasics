@@ -25,6 +25,7 @@ class   EmployeeRequest extends FormRequest
             'name'     => 'required|string|max:255',
             'number'   => 'required|string|max:255',
             'job_type' => 'required|string|max:255',
+            'image'    => 'image|mimes:jpeg,png,jpg,gif|max:2048'
         ];
     }
 

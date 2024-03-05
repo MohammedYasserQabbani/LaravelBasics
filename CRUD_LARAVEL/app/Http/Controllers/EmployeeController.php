@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\EmployeeRequest;
 use App\Models\Employee;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 
 class EmployeeController extends Controller
 {
@@ -20,7 +21,9 @@ class EmployeeController extends Controller
         if ($employees->isEmpty()) {
             return response()->json([], Response::HTTP_NO_CONTENT); // رمز الحالة 204
         }
-
+        $employees->each(function($employee){
+            $employee->image_path = asset($employee->image);
+        });
         return response()->json([
             "message" => "Employees retrieved successfully",
             "data" => $employees,
@@ -41,7 +44,7 @@ class EmployeeController extends Controller
                 "message" => "Employee not found",
             ], Response::HTTP_NOT_FOUND); // رمز الحالة 404
         }
-
+        $employee->image_path = asset($employee->image);
         return response()->json([
             "message" => "Employee retrieved successfully",
             "data" => $employee,
@@ -55,8 +58,14 @@ class EmployeeController extends Controller
      */
     public function store(EmployeeRequest $employeeRequest)
     {
-
         $validatedData = $employeeRequest->validated();
+
+        if($employeeRequest->hasFile('image')){
+            $image_path = $employeeRequest->file('image')->store('images','public');
+            $validatedData['image'] = $image_path;
+        }
+       
+        
         $employee = new Employee();
         $employee->fill($validatedData);
         $employee->save();
@@ -81,7 +90,14 @@ class EmployeeController extends Controller
                 "message" => "Employee not found",
             ], Response::HTTP_NOT_FOUND); // رمز الحالة 404
         }
-
+        if($employeeRequest->hasFile('image')){
+            if($employee->image){
+                Storage::disk('public')->delete($employee->image);
+            }
+            $image_path = $employeeRequest->file('image')->store('images','public');
+            $validatedData['image'] = $image_path;
+        }
+       
         $employee->fill($validatedData);
         $employee->save();
 
@@ -105,6 +121,9 @@ class EmployeeController extends Controller
             ], Response::HTTP_NOT_FOUND); // رمز الحالة 404
         }
 
+        if($employee->image){
+            Storage::disk('public')->delete($employee->image);
+        }
         $employee->delete();
 
         return response()->json([

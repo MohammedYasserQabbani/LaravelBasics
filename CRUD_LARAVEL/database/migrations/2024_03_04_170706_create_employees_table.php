@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string("name");
             $table->string("number");
             $table->string("job_type");
+            $table->string("image")->nullable();
             $table->timestamps();
         });
     }
