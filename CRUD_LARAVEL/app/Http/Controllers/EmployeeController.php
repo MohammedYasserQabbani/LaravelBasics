@@ -11,7 +11,7 @@ class EmployeeController extends Controller
 {
     /**
      *  Retrieve all employees.
-     * 
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function index()
@@ -21,7 +21,7 @@ class EmployeeController extends Controller
         if ($employees->isEmpty()) {
             return response()->json([], Response::HTTP_NO_CONTENT); // رمز الحالة 204
         }
-        $employees->each(function($employee){
+        $employees->each(function ($employee) {
             $employee->image_path = asset($employee->image);
         });
         return response()->json([
@@ -31,7 +31,7 @@ class EmployeeController extends Controller
     }
     /**
      *  Retrieve aspecific employee by Id
-     * 
+     *
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
@@ -52,7 +52,7 @@ class EmployeeController extends Controller
     }
     /**
      * Store a new employee
-     * 
+     *
      * @param \App\Http\Request\EmployeeRequest $employeeRequest
      * @return \Illuminate\Http\JsonResponse
      */
@@ -60,12 +60,12 @@ class EmployeeController extends Controller
     {
         $validatedData = $employeeRequest->validated();
 
-        if($employeeRequest->hasFile('image')){
-            $image_path = $employeeRequest->file('image')->store('images','public');
+        if($employeeRequest->hasFile('image')) {
+            $image_path = $employeeRequest->file('image')->store('images', 'public');
             $validatedData['image'] = $image_path;
         }
-       
-        
+
+
         $employee = new Employee();
         $employee->fill($validatedData);
         $employee->save();
@@ -75,7 +75,7 @@ class EmployeeController extends Controller
     }
     /**
      * Update an existing employee.
-     * 
+     *
      *  @param \App\Http\Request\EmployeeRequest $employeeRequest
      *  @param int $id
      *  @return \Illuminate\Http\JsonResponse
@@ -90,14 +90,14 @@ class EmployeeController extends Controller
                 "message" => "Employee not found",
             ], Response::HTTP_NOT_FOUND); // رمز الحالة 404
         }
-        if($employeeRequest->hasFile('image')){
-            if($employee->image){
+        if($employeeRequest->hasFile('image')) {
+            if($employee->image) {
                 Storage::disk('public')->delete($employee->image);
             }
-            $image_path = $employeeRequest->file('image')->store('images','public');
+            $image_path = $employeeRequest->file('image')->store('images', 'public');
             $validatedData['image'] = $image_path;
         }
-       
+
         $employee->fill($validatedData);
         $employee->save();
 
@@ -107,7 +107,7 @@ class EmployeeController extends Controller
     }
     /**
      *  Delete an existing employee.
-     * 
+     *
      * @param int $id.
      * @return  \Illuminate\Http\JsonResponse
      */
@@ -121,7 +121,7 @@ class EmployeeController extends Controller
             ], Response::HTTP_NOT_FOUND); // رمز الحالة 404
         }
 
-        if($employee->image){
+        if($employee->image) {
             Storage::disk('public')->delete($employee->image);
         }
         $employee->delete();
