@@ -18,7 +18,7 @@ class Controller extends BaseController
 
     /**
      * Retrieve all posts with content
-     * 
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function index(){
@@ -42,9 +42,9 @@ class Controller extends BaseController
         ], Response::HTTP_OK);//200
     }
 
-    /** 
+    /**
      * Retrieve aspecific post with content by Id
-     * 
+     *
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
     */
@@ -96,7 +96,7 @@ class Controller extends BaseController
     }
     /**
      * Update an existing post and content
-     * 
+     *
      * @param \App\Http\Requests\PostRequest $postRequest
      * @param \App\Http\Requests\ContentRequest $contentRequest
      * @param int $id
@@ -109,9 +109,9 @@ class Controller extends BaseController
                 "message" => "posts not found"
             ],Response::HTTP_NOT_FOUND); //404
         }
-        $validatedPost = $postRequest->validated(); 
+        $validatedPost = $postRequest->validated();
         $post->update($validatedPost);
-        $validatedContent = $contentRequest->validated(); 
+        $validatedContent = $contentRequest->validated();
         if($post->content){
             $post->content->update($validatedContent);
         }else{
@@ -126,7 +126,7 @@ class Controller extends BaseController
 
     /**
      * delete an exisiting post
-     * 
+     *
      * @param  int $id
      * @return \Illuminate\Http\JsonResponse
      */
